@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,7 +41,7 @@ public class ArithmeticOperationsResourceIT {
     final MockHttpServletResponse response =
         mockMvc
             .perform(
-                put("/api/add-operation")
+                post("/api/add")
                     .contentType("application/json")
                     .content(objectMapper.writeValueAsString(operandDTO)))
             .andExpect(status().isOk())
