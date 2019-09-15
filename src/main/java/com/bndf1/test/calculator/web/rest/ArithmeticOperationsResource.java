@@ -2,15 +2,14 @@ package com.bndf1.test.calculator.web.rest;
 
 import com.bndf1.test.calculator.domain.dto.OperandDTO;
 import com.bndf1.test.calculator.domain.dto.ResultDTO;
+import com.bndf1.test.calculator.exceptions.OperandException;
 import com.bndf1.test.calculator.service.ArithmeticOperationsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URISyntaxException;
 
@@ -36,10 +35,17 @@ public class ArithmeticOperationsResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PostMapping("/add")
-  public ResponseEntity<ResultDTO> add(@RequestBody final OperandDTO operandDTO)
-      throws URISyntaxException {
+  public ResponseEntity<ResultDTO> add(@RequestBody final OperandDTO operandDTO) throws Exception {
     log.debug("REST request to perform the add operation : {}", operandDTO);
-    final ResultDTO resultDTO = this.arithmeticOperationsService.add(operandDTO);
-    return ResponseEntity.ok().body(resultDTO);
+    if (operandDTO != null) {
+      final ResultDTO resultDTO = this.arithmeticOperationsService.add(operandDTO);
+      return ResponseEntity.ok().body(resultDTO);
+    }
+    return ResponseEntity.badRequest().build();
+  }
+
+  @ExceptionHandler({ArithmeticException.class, OperandException.class})
+  public ResponseEntity<String> handleException(final RuntimeException exception) {
+    return new ResponseEntity<>(exception.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
   }
 }
