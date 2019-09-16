@@ -101,5 +101,11 @@ class ArithmeticOperationsResourceTest {
   @Test
   void subtractWithNullDtoTest() {
     final ResponseEntity<ResultDTO> result = this.arithmeticOperationsResource.subtract(null);
+    final ArgumentCaptor<OperandDTO> operandDTOArgumentCaptor =
+        ArgumentCaptor.forClass(OperandDTO.class);
+    verify(this.arithmeticOperationsService, times(0)).subtract(operandDTOArgumentCaptor.capture());
+
+    assertThat(result).isNotNull();
+    assertThat(result).isEqualTo(ResponseEntity.badRequest().build());
   }
 }
