@@ -18,7 +18,7 @@ class ArithmeticOperationsServiceImplTest {
   @InjectMocks private ArithmeticOperationsServiceImpl arithmeticOperationsServiceImpl;
 
   @Test
-  void addWitAllOperandsNullThrowsExceptionTest() {
+  void addWithAllOperandsNullThrowsExceptionTest() {
     final OperandDTO operandDTO = OperandDTO.builder().build();
     final OperandException operandException =
         assertThrows(
@@ -76,5 +76,11 @@ class ArithmeticOperationsServiceImplTest {
     final ResultDTO resultDto = this.arithmeticOperationsServiceImpl.add(operandDTO);
 
     assertThat(resultDto.getResult()).isEqualTo(resultExpected);
+  }
+
+  @Test
+  void subtractOperationWithNullOperandsTest() {
+    final OperandDTO operandDTO = OperandDTO.builder().build();
+    this.arithmeticOperationsServiceImpl.subtract(operandDTO);
   }
 }
