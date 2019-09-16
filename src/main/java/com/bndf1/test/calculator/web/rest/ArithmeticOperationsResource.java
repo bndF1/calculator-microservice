@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
-
 @RestController
 @RequestMapping("/api")
 public class ArithmeticOperationsResource {
@@ -32,10 +30,9 @@ public class ArithmeticOperationsResource {
    * @param operandDTO the DTO representing the two numbers to sum.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the resultDTO, or
    *     with status {@code 400 (Bad Request)} if something wrong.
-   * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PostMapping("/add")
-  public ResponseEntity<ResultDTO> add(@RequestBody final OperandDTO operandDTO) throws Exception {
+  public ResponseEntity<ResultDTO> add(@RequestBody final OperandDTO operandDTO) {
     log.debug("REST request to perform the add operation : {}", operandDTO);
     if (operandDTO != null) {
       final ResultDTO resultDTO = this.arithmeticOperationsService.add(operandDTO);

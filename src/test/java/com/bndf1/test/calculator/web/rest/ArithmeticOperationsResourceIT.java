@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 public class ArithmeticOperationsResourceIT {
 
-  @Autowired MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
   @Autowired private ArithmeticOperationsService arithmeticOperationsService;
   @Autowired private ObjectMapper objectMapper;
 
