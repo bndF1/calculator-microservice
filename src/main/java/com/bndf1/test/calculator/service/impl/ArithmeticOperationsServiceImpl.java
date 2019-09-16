@@ -33,6 +33,10 @@ public class ArithmeticOperationsServiceImpl implements ArithmeticOperationsServ
 
   @Override
   public ResultDTO subtract(final OperandDTO dto) {
-    return null;
+    final Double firstOperand =
+        Optional.ofNullable(dto.getFirstOperand())
+            .orElseThrow(() -> new OperandException(FIRST_OPERAND_IS_NULL));
+
+    return ResultDTO.builder().build();
   }
 }
