@@ -97,4 +97,9 @@ class ArithmeticOperationsResourceTest {
     assertThat(exception.getBody()).isEqualTo(operandException.getLocalizedMessage());
     assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
+
+  @Test
+  void subtractWithNullDtoTest() {
+    final ResponseEntity<ResultDTO> result = this.arithmeticOperationsResource.subtract(null);
+  }
 }
