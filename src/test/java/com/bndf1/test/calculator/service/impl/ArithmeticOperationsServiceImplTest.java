@@ -89,4 +89,17 @@ class ArithmeticOperationsServiceImplTest {
     assertThat(operandException.getLocalizedMessage())
         .isEqualTo(String.valueOf(ApiExceptions.FIRST_OPERAND_IS_NULL));
   }
+
+  @Test
+  void subtractOperationWithSecondOperandNullTest() {
+    final OperandDTO operandDTO =
+        OperandDTO.builder().firstOperand(Double.MAX_VALUE).secondOperand(null).build();
+
+    final OperandException operandException =
+        assertThrows(
+            OperandException.class,
+            () -> this.arithmeticOperationsServiceImpl.subtract(operandDTO));
+    assertThat(operandException.getLocalizedMessage())
+        .isEqualTo(String.valueOf(ApiExceptions.SECOND_OPERAND_IS_NULL));
+  }
 }
