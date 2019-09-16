@@ -6,6 +6,7 @@ import com.bndf1.test.calculator.exceptions.OperandException;
 import com.bndf1.test.calculator.service.ArithmeticOperationsService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static com.bndf1.test.calculator.exceptions.ApiExceptions.*;
@@ -33,14 +34,23 @@ public class ArithmeticOperationsServiceImpl implements ArithmeticOperationsServ
 
   @Override
   public ResultDTO subtract(final OperandDTO dto) {
-    final Double firstOperand =
+
+    final BigDecimal firstOperand =
         Optional.ofNullable(dto.getFirstOperand())
+            .map(BigDecimal::new)
             .orElseThrow(() -> new OperandException(FIRST_OPERAND_IS_NULL));
 
-    final Double secondOperand =
+    final BigDecimal secondOperand =
         Optional.ofNullable(dto.getSecondOperand())
+            .map(BigDecimal::new)
             .orElseThrow(() -> new OperandException(SECOND_OPERAND_IS_NULL));
 
-    return ResultDTO.builder().build();
+    final Double result =
+        Optional.of(firstOperand.subtract(secondOperand))
+            .map(BigDecimal::doubleValue)
+            .filter(resultDouble -> !resultDouble.isNaN() && !resultDouble.isInfinite())
+            .orElseThrow(() -> new OperandException(NAN_OR_INFINITE));
+
+    return ResultDTO.builder().result(result).build();
   }
 }

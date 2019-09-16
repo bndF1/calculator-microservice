@@ -9,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -101,5 +103,21 @@ class ArithmeticOperationsServiceImplTest {
             () -> this.arithmeticOperationsServiceImpl.subtract(operandDTO));
     assertThat(operandException.getLocalizedMessage())
         .isEqualTo(String.valueOf(ApiExceptions.SECOND_OPERAND_IS_NULL));
+  }
+
+  @Test
+  void subtractOperationShouldWorkTest() {
+
+    final BigDecimal firstOperand = BigDecimal.valueOf(12.2D);
+    final BigDecimal secondOperand = BigDecimal.valueOf(23.456d);
+
+    final BigDecimal resultExpected = firstOperand.subtract(secondOperand);
+
+    final OperandDTO operandDTO =
+        OperandDTO.builder().firstOperand(12.2D).secondOperand(23.456d).build();
+
+    final ResultDTO resultDTO = this.arithmeticOperationsServiceImpl.subtract(operandDTO);
+
+    assertThat(resultDTO.getResult()).isEqualTo(resultExpected.doubleValue());
   }
 }
