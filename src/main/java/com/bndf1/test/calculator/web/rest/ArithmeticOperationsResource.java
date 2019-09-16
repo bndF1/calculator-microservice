@@ -48,6 +48,10 @@ public class ArithmeticOperationsResource {
 
   @PostMapping("/subtract")
   public ResponseEntity<ResultDTO> subtract(@RequestBody final OperandDTO operandDTO) {
-    return null;
+    if (operandDTO != null) {
+      final ResultDTO resultDTO = this.arithmeticOperationsService.subtract(operandDTO);
+      return ResponseEntity.ok(resultDTO);
+    }
+    return ResponseEntity.badRequest().build();
   }
 }

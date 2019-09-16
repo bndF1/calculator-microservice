@@ -44,7 +44,8 @@ class ArithmeticOperationsResourceTest {
   @Test
   void addAndServiceThrowExceptionTest() {
     final EasyRandom easyRandom = new EasyRandom();
-    final OperandException operandException = easyRandom.nextObject(OperandException.class);
+    final OperandException operandException =
+        new OperandException(ApiExceptions.FIRST_OPERAND_IS_NULL);
     final OperandDTO operandDTO =
         OperandDTO.builder()
             .firstOperand(null)
@@ -88,17 +89,6 @@ class ArithmeticOperationsResourceTest {
   }
 
   @Test
-  void handleException() {
-    final OperandException operandException =
-        new OperandException(ApiExceptions.FIRST_OPERAND_IS_NULL);
-    final ResponseEntity<String> exception =
-        this.arithmeticOperationsResource.handleException(operandException);
-    assertThat(exception).isNotNull();
-    assertThat(exception.getBody()).isEqualTo(operandException.getLocalizedMessage());
-    assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-  }
-
-  @Test
   void subtractWithNullDtoTest() {
     final ResponseEntity<ResultDTO> result = this.arithmeticOperationsResource.subtract(null);
     final ArgumentCaptor<OperandDTO> operandDTOArgumentCaptor =
@@ -107,5 +97,65 @@ class ArithmeticOperationsResourceTest {
 
     assertThat(result).isNotNull();
     assertThat(result).isEqualTo(ResponseEntity.badRequest().build());
+  }
+
+  @Test
+  void subtractAndServiceThrowExceptionTest() {
+    final EasyRandom easyRandom = new EasyRandom();
+    final OperandException operandException =
+        new OperandException(ApiExceptions.FIRST_OPERAND_IS_NULL);
+
+    final OperandDTO operandDTO =
+        OperandDTO.builder()
+            .firstOperand(null)
+            .secondOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .build();
+
+    when(this.arithmeticOperationsService.subtract(any(OperandDTO.class)))
+        .thenThrow(operandException);
+
+    assertThrows(
+        OperandException.class,
+        () -> {
+          final ArgumentCaptor<OperandDTO> operandDTOArgumentCaptor =
+              ArgumentCaptor.forClass(OperandDTO.class);
+
+          this.arithmeticOperationsResource.subtract(operandDTO);
+          verify(this.arithmeticOperationsService, times(1))
+              .subtract(operandDTOArgumentCaptor.capture());
+        });
+  }
+
+  @Test
+  void subtractWorksProperlyTest() {
+    final EasyRandom easyRandom = new EasyRandom();
+
+    final OperandDTO operandDTO = easyRandom.nextObject(OperandDTO.class);
+    final ResultDTO resultDTO = easyRandom.nextObject(ResultDTO.class);
+    when(this.arithmeticOperationsService.subtract(any(OperandDTO.class))).thenReturn(resultDTO);
+
+    final ArgumentCaptor<OperandDTO> operandDTOArgumentCaptor =
+        ArgumentCaptor.forClass(OperandDTO.class);
+
+    final ResponseEntity<ResultDTO> result = this.arithmeticOperationsResource.subtract(operandDTO);
+    verify(this.arithmeticOperationsService).subtract(operandDTOArgumentCaptor.capture());
+    final OperandDTO captorValue = operandDTOArgumentCaptor.getValue();
+
+    assertEquals(captorValue, operandDTO);
+    assertThat(captorValue.getFirstOperand()).isEqualTo(operandDTO.getFirstOperand());
+    assertThat(captorValue.getSecondOperand()).isEqualTo(operandDTO.getSecondOperand());
+
+    assertThat(result.getBody()).isEqualTo(resultDTO);
+  }
+
+  @Test
+  void handleException() {
+    final OperandException operandException =
+        new OperandException(ApiExceptions.FIRST_OPERAND_IS_NULL);
+    final ResponseEntity<String> exception =
+        this.arithmeticOperationsResource.handleException(operandException);
+    assertThat(exception).isNotNull();
+    assertThat(exception.getBody()).isEqualTo(operandException.getLocalizedMessage());
+    assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
   }
 }
