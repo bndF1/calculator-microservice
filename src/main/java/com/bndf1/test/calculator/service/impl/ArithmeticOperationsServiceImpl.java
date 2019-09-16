@@ -30,4 +30,9 @@ public class ArithmeticOperationsServiceImpl implements ArithmeticOperationsServ
 
     return ResultDTO.builder().result(result).build();
   }
+
+  @Override
+  public ResultDTO subtract(final OperandDTO dto) {
+    return null;
+  }
 }
