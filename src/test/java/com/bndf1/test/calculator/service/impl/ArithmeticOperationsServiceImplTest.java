@@ -4,6 +4,7 @@ import com.bndf1.test.calculator.domain.dto.OperandDTO;
 import com.bndf1.test.calculator.domain.dto.ResultDTO;
 import com.bndf1.test.calculator.exceptions.ApiExceptions;
 import com.bndf1.test.calculator.exceptions.OperandException;
+import org.jeasy.random.EasyRandom;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,10 @@ class ArithmeticOperationsServiceImplTest {
   @Test
   void addWithSecondOperandNullThrowsExceptionTest() {
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(Double.MAX_VALUE).secondOperand(null).build();
+        OperandDTO.builder()
+            .firstOperand(BigDecimal.valueOf(Double.MAX_VALUE))
+            .secondOperand(null)
+            .build();
     final OperandException operandException =
         assertThrows(
             OperandException.class, () -> this.arithmeticOperationsServiceImpl.add(operandDTO));
@@ -41,38 +45,14 @@ class ArithmeticOperationsServiceImplTest {
   }
 
   @Test
-  void addWithNaNOperandThrowsExceptionTest() {
-    final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(Double.NaN).secondOperand(Double.MAX_VALUE).build();
-    final OperandException operandException =
-        assertThrows(
-            OperandException.class, () -> this.arithmeticOperationsServiceImpl.add(operandDTO));
-    assertThat(operandException.getLocalizedMessage())
-        .isEqualTo(String.valueOf(ApiExceptions.NAN_OR_INFINITE));
-  }
-
-  @Test
-  void addWithInfinityOperandThrowsExceptionTest() {
-    final OperandDTO operandDTO =
-        OperandDTO.builder()
-            .firstOperand(Double.MIN_NORMAL)
-            .secondOperand(Double.NEGATIVE_INFINITY)
-            .build();
-    final OperandException operandException =
-        assertThrows(
-            OperandException.class, () -> this.arithmeticOperationsServiceImpl.add(operandDTO));
-    assertThat(operandException.getLocalizedMessage())
-        .isEqualTo(String.valueOf(ApiExceptions.NAN_OR_INFINITE));
-  }
-
-  @Test
   void addWithOperandDTOValuesShouldWorkProperly() {
-    final double resultExpected = Double.sum(Double.MIN_NORMAL, Double.MAX_VALUE);
+    final BigDecimal resultExpected =
+        BigDecimal.valueOf(Double.MIN_NORMAL).add(BigDecimal.valueOf(Double.MAX_VALUE));
 
     final OperandDTO operandDTO =
         OperandDTO.builder()
-            .firstOperand(Double.MIN_NORMAL)
-            .secondOperand(Double.MAX_VALUE)
+            .firstOperand(BigDecimal.valueOf(Double.MIN_NORMAL))
+            .secondOperand(BigDecimal.valueOf(Double.MAX_VALUE))
             .build();
 
     final ResultDTO resultDto = this.arithmeticOperationsServiceImpl.add(operandDTO);
@@ -95,7 +75,10 @@ class ArithmeticOperationsServiceImplTest {
   @Test
   void subtractOperationWithSecondOperandNullTest() {
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(Double.MAX_VALUE).secondOperand(null).build();
+        OperandDTO.builder()
+            .firstOperand(BigDecimal.valueOf(Double.MAX_VALUE))
+            .secondOperand(null)
+            .build();
 
     final OperandException operandException =
         assertThrows(
@@ -107,17 +90,17 @@ class ArithmeticOperationsServiceImplTest {
 
   @Test
   void subtractOperationShouldWorkTest() {
-
-    final BigDecimal firstOperand = BigDecimal.valueOf(12.2D);
-    final BigDecimal secondOperand = BigDecimal.valueOf(23.456d);
+    final EasyRandom easyRandom = new EasyRandom();
+    final BigDecimal firstOperand = BigDecimal.valueOf(easyRandom.nextGaussian());
+    final BigDecimal secondOperand = BigDecimal.valueOf(easyRandom.nextDouble());
 
     final BigDecimal resultExpected = firstOperand.subtract(secondOperand);
 
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(12.2D).secondOperand(23.456d).build();
+        OperandDTO.builder().firstOperand(firstOperand).secondOperand(secondOperand).build();
 
     final ResultDTO resultDTO = this.arithmeticOperationsServiceImpl.subtract(operandDTO);
 
-    assertThat(resultDTO.getResult()).isEqualTo(resultExpected.doubleValue());
+    assertThat(resultDTO.getResult()).isEqualTo(resultExpected);
   }
 }

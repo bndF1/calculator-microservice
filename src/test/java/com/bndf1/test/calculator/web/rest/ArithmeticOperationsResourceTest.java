@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,7 +46,10 @@ class ArithmeticOperationsResourceTest {
     final EasyRandom easyRandom = new EasyRandom();
     final OperandException operandException = easyRandom.nextObject(OperandException.class);
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(null).secondOperand(easyRandom.nextDouble()).build();
+        OperandDTO.builder()
+            .firstOperand(null)
+            .secondOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .build();
 
     when(this.arithmeticOperationsService.add(any(OperandDTO.class))).thenThrow(operandException);
 
