@@ -81,6 +81,12 @@ class ArithmeticOperationsServiceImplTest {
   @Test
   void subtractOperationWithNullOperandsTest() {
     final OperandDTO operandDTO = OperandDTO.builder().build();
-    this.arithmeticOperationsServiceImpl.subtract(operandDTO);
+
+    final OperandException operandException =
+        assertThrows(
+            OperandException.class,
+            () -> this.arithmeticOperationsServiceImpl.subtract(operandDTO));
+    assertThat(operandException.getLocalizedMessage())
+        .isEqualTo(String.valueOf(ApiExceptions.FIRST_OPERAND_IS_NULL));
   }
 }
