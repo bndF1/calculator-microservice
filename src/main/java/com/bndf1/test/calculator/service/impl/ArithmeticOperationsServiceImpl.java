@@ -37,6 +37,10 @@ public class ArithmeticOperationsServiceImpl implements ArithmeticOperationsServ
         Optional.ofNullable(dto.getFirstOperand())
             .orElseThrow(() -> new OperandException(FIRST_OPERAND_IS_NULL));
 
+    final Double secondOperand =
+        Optional.ofNullable(dto.getSecondOperand())
+            .orElseThrow(() -> new OperandException(SECOND_OPERAND_IS_NULL));
+
     return ResultDTO.builder().build();
   }
 }
