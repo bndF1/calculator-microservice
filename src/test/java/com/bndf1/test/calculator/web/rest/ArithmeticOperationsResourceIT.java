@@ -136,4 +136,66 @@ public class ArithmeticOperationsResourceIT {
     assertThat(response.getContentAsString())
         .isEqualTo(String.valueOf(ApiExceptions.SECOND_OPERAND_IS_NULL));
   }
+
+  @Test
+  public void performSubtractOperationDeserializationTest() throws Exception {
+    final EasyRandom easyRandom = new EasyRandom();
+    final OperandDTO operandDTO = easyRandom.nextObject(OperandDTO.class);
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/api/subtract")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(operandDTO)))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse();
+
+    final ResultDTO resultDTO =
+        objectMapper.readValue(response.getContentAsString(), ResultDTO.class);
+    assertThat(resultDTO).isNotNull();
+    assertThat(resultDTO.getResult())
+        .isEqualTo(operandDTO.getFirstOperand().subtract(operandDTO.getSecondOperand()));
+  }
+
+  @Test
+  public void performSubtractOperationTestWithBadRequest() throws Exception {
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/api/subtract")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(null)))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse();
+
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  public void performSubtractOperationTestWithFirstOperandException() throws Exception {
+    final EasyRandom easyRandom = new EasyRandom();
+    final OperandDTO operandDTO =
+        OperandDTO.builder()
+            .firstOperand(null)
+            .secondOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .build();
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/api/subtract")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(operandDTO)))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse();
+
+    assertThat(response).isNotNull();
+    assertThat(response.getContentAsString())
+        .isEqualTo(String.valueOf(ApiExceptions.FIRST_OPERAND_IS_NULL));
+  }
 }
