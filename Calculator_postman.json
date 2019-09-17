@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "64aa6169-a3f1-4967-b2d5-371c880c297a",
+		"name": "Calculator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstOperand\": 23.82038,\n\t\"secondOperand\": 100\n}"
+				},
+				"url": {
+					"raw": "localhost:8082/api/add",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"add"
+					]
+				},
+				"description": "Perform an add operation"
+			},
+			"response": []
+		},
+		{
+			"name": "Subtract",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstOperand\": \"23.82038\",\n\t\"secondOperand\": 100\n}"
+				},
+				"url": {
+					"raw": "localhost:8082/api/subtract",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"subtract"
+					]
+				},
+				"description": "Perform subtract operation"
+			},
+			"response": []
+		}
+	]
+}
