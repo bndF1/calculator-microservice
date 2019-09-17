@@ -34,7 +34,7 @@ Moreover some dependencies have been added in order to facilitate the developmen
 ## Methodolgy used
 
 For this example I've used TDD as development methodology, and can be checked at commits: 
-[ee1cdb9](https://github.com/bndF1/calculator-microservice/commit/ee1cdb9f792fe9cd8206b0b1682881aab673589b), [11a619c](https://github.com/bndF1/calculator-microservice/commit/11a619c7acd6a6efb0ecd7742e6e23beecf0ee35) and [683805c](https://github.com/bndF1/calculator-microservice/commit/683805c4938f9a0c5c49dbd28fea3fa2159107ee) althout there are more examples.
+[ee1cdb9](https://github.com/bndF1/calculator-microservice/commit/ee1cdb9f792fe9cd8206b0b1682881aab673589b), [11a619c](https://github.com/bndF1/calculator-microservice/commit/11a619c7acd6a6efb0ecd7742e6e23beecf0ee35) and [683805c](https://github.com/bndF1/calculator-microservice/commit/683805c4938f9a0c5c49dbd28fea3fa2159107ee) although there are more examples.
 
 Also would be noticiable to know that Github projects have been used for a basic representation of the tasks done.
 
