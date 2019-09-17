@@ -16,6 +16,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,7 +70,7 @@ public class ArithmeticOperationsResourceIT {
         objectMapper.readValue(response.getContentAsString(), ResultDTO.class);
     assertThat(resultDTO).isNotNull();
     assertThat(resultDTO.getResult())
-        .isEqualTo(Double.sum(operandDTO.getFirstOperand(), operandDTO.getSecondOperand()));
+        .isEqualTo(operandDTO.getFirstOperand().add(operandDTO.getSecondOperand()));
   }
 
   @Test
@@ -91,7 +93,10 @@ public class ArithmeticOperationsResourceIT {
   public void performAddOperationTestWithFirstOperandException() throws Exception {
     final EasyRandom easyRandom = new EasyRandom();
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(null).secondOperand(easyRandom.nextDouble()).build();
+        OperandDTO.builder()
+            .firstOperand(null)
+            .secondOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .build();
 
     final MockHttpServletResponse response =
         mockMvc
@@ -112,7 +117,10 @@ public class ArithmeticOperationsResourceIT {
   public void performAddOperationTestWithSecondException() throws Exception {
     final EasyRandom easyRandom = new EasyRandom();
     final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(easyRandom.nextDouble()).secondOperand(null).build();
+        OperandDTO.builder()
+            .firstOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .secondOperand(null)
+            .build();
 
     final MockHttpServletResponse response =
         mockMvc
@@ -130,15 +138,56 @@ public class ArithmeticOperationsResourceIT {
   }
 
   @Test
-  public void performAddOperationTestWithArithmeticException() throws Exception {
+  public void performSubtractOperationDeserializationTest() throws Exception {
     final EasyRandom easyRandom = new EasyRandom();
-    final OperandDTO operandDTO =
-        OperandDTO.builder().firstOperand(easyRandom.nextDouble()).secondOperand(0D / 0D).build();
+    final OperandDTO operandDTO = easyRandom.nextObject(OperandDTO.class);
 
     final MockHttpServletResponse response =
         mockMvc
             .perform(
-                post("/api/add")
+                post("/api/subtract")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(operandDTO)))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse();
+
+    final ResultDTO resultDTO =
+        objectMapper.readValue(response.getContentAsString(), ResultDTO.class);
+    assertThat(resultDTO).isNotNull();
+    assertThat(resultDTO.getResult())
+        .isEqualTo(operandDTO.getFirstOperand().subtract(operandDTO.getSecondOperand()));
+  }
+
+  @Test
+  public void performSubtractOperationTestWithBadRequest() throws Exception {
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/api/subtract")
+                    .contentType("application/json")
+                    .content(objectMapper.writeValueAsString(null)))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse();
+
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+  }
+
+  @Test
+  public void performSubtractOperationTestWithFirstOperandException() throws Exception {
+    final EasyRandom easyRandom = new EasyRandom();
+    final OperandDTO operandDTO =
+        OperandDTO.builder()
+            .firstOperand(null)
+            .secondOperand(BigDecimal.valueOf(easyRandom.nextDouble()))
+            .build();
+
+    final MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/api/subtract")
                     .contentType("application/json")
                     .content(objectMapper.writeValueAsString(operandDTO)))
             .andExpect(status().isBadRequest())
@@ -147,6 +196,6 @@ public class ArithmeticOperationsResourceIT {
 
     assertThat(response).isNotNull();
     assertThat(response.getContentAsString())
-        .isEqualTo(String.valueOf(ApiExceptions.NAN_OR_INFINITE));
+        .isEqualTo(String.valueOf(ApiExceptions.FIRST_OPERAND_IS_NULL));
   }
 }

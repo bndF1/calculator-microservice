@@ -45,4 +45,13 @@ public class ArithmeticOperationsResource {
   public ResponseEntity<String> handleException(final RuntimeException exception) {
     return new ResponseEntity<>(exception.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
   }
+
+  @PostMapping("/subtract")
+  public ResponseEntity<ResultDTO> subtract(@RequestBody final OperandDTO operandDTO) {
+    if (operandDTO != null) {
+      final ResultDTO resultDTO = this.arithmeticOperationsService.subtract(operandDTO);
+      return ResponseEntity.ok(resultDTO);
+    }
+    return ResponseEntity.badRequest().build();
+  }
 }
