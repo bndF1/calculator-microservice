@@ -1,5 +1,5 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/bndf1/calculator-microservice/badge)](https://www.codefactor.io/repository/github/bndf1/calculator-microservice)
-# Welcome microservice calculator!
+# Welcome to microservice calculator! :rocket:
 
 Hi! This is the **calculator microservice example**. In this example two endpoints are exposed, in order to represent this basic operations:  
 
